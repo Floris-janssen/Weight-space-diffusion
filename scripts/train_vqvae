@@ -1,0 +1,51 @@
+import os
+import sys
+import torch
+import glob
+from torch.utils.data import TensorDataset, DataLoader
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from src.models.weight_vqvae import WeightVQVAE, vqvae_loss_function
+from src.training.vqvae_trainer import VQVAETrainer
+from src.utils.weight_space_utils import AdapterNormalizer
+
+def main():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    adapters_dir = os.path.join(PROJECT_ROOT, "data", "adapters_chairs")
+    output_dir = os.path.join(PROJECT_ROOT, "outputs", "VQ_VAE")
+    os.makedirs(output_dir, exist_ok=True)
+
+    adapter_files = glob.glob(os.path.join(adapters_dir, "*.pt"))
+    if not adapter_files:
+        raise FileNotFoundError("No adapters found! Run fit_adapters.py first.")
+
+    print(f"Loading {len(adapter_files)} adapters...")
+    tensors = [torch.load(f, map_location='cpu') for f in adapter_files]
+    raw_adapters = torch.stack(tensors)
+    input_dim = raw_adapters.shape[1]
+
+    # Normalize stats
+    normalizer = AdapterNormalizer()
+    normalizer.fit(raw_adapters)
+    normalized_data = normalizer.normalize(raw_adapters)
+
+    torch.save({'mean': normalizer.mean, 'std': normalizer.std}, os.path.join(output_dir, "adapter_normalizer_stats.pt"))
+
+    dataset = TensorDataset(normalized_data)
+    dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+    model = WeightVQVAE(input_dim=input_dim, num_tokens=16, embedding_dim=8, num_embeddings=256, commitment_cost=0.25)
+    trainer = VQVAETrainer(vqvae_model=model, learning_rate=3e-4, device=device, checkpoint_dir=output_dir)
+
+    print("Training VQ-VAE...")
+    trainer.train(dataloader=dataloader, epochs=200, loss_fn=vqvae_loss_function, log_interval=10, save_interval=50)
+
+    # Save final model weights
+    torch.save({'model_state': model.state_dict()}, os.path.join(output_dir, "vqvae_final.pt"))
+    print("VQ-VAE Training Complete!")
+
+if __name__ == "__main__":
+    main()

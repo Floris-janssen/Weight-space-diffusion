@@ -1,0 +1,18 @@
+# WIRE base network architecture
+
+
+# Consumed by train_phase1.py and evaluate_phase1.py
+in_features: 3
+hidden_features: 256
+hidden_layers: 4
+out_features: 1
+omega_0: 10.0
+# Localised Gaussian envelope so wavelets actually LOCALISE.
+# scale=1.0 degenerates to global sin/cos (SIREN-like) whose |grad|≈w0
+# everywhere -> the Eikonal term explodes and the far-field amplitude is
+# never learned. The known-good recipe uses scale=10 (a.k.a. the "blobs"
+# fix's companion): the wavelets tile the cube, so the net can build a
+# smoothly rising SDF AND satisfy |grad f| = 1.
+scale: 10.0
+lora_rank: 32
+

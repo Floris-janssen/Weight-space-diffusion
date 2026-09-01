@@ -1,0 +1,84 @@
+# ---- Python -------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# ---- Jupyter / notebooks -------------------------------------------------
+.ipynb_checkpoints/
+*.ipynb
+
+# ---- IDE / editors -------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ---- Test / coverage -----------------------------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# ---- Project outputs / checkpoints ---------------------------------------
+checkpoints/
+outputs/
+results/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.engine
+
+# ---- Data (raw & processed meshes/adapters are usually large) ------------
+data/processed_meshes/
+data/processed_sdf/
+data/processed_chairs/
+data/adapters_chairs/
+data/raw_meshes/
+
+# ---- Notebooks generated figures ----------------------------------------
+notebooks/paper graphs/*.png
+
+# ---- OS / misc -----------------------------------------------------------
+Thumbs.db
+desktop.ini
+*.log
+
+# ---- Google Colab --------------------------------------------------------
+.colab/
+gdrive/
+
+.continue/
+
+*.zip
+.zip
+.rar
+*.rar
