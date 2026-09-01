@@ -4,7 +4,7 @@ A production-ready pipeline for learning, quantizing, and generating 3D Signed D
 
 This repository replaces standard ReLU/WIRE networks with **FINER** (Flexible Spectral-bias Tuning) and utilizes **Multiplicative MAML-LoRA** to solve weight-space permutation symmetries. The extracted low-rank adapter vectors are compressed via a VQ-VAE and generated using a 1D Latent Diffusion Transformer (DiT), before being extracted into watertight meshes via FlexiCubes.
 
-## 🚀 Pipeline Overview
+## Pipeline Overview
 
 | Stage | Script | Description |
 | :--- | :--- | :--- |
@@ -15,7 +15,7 @@ This repository replaces standard ReLU/WIRE networks with **FINER** (Flexible Sp
 | **4. Latent DiT** | `scripts/train_dit.py` | Trains a 1D Diffusion Transformer to denoise the discrete latent tokens. |
 | **5. Generation** | `scripts/generate_meshes.py` | Samples novel latents, decodes weights, and extracts 3D meshes using FlexiCubes. |
 
-## 🛠️ Installation
+## Installation
 
 Requires Python 3.10+ and a CUDA-capable GPU (tested on NVIDIA T4).
 
